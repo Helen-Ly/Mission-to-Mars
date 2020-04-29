@@ -29,5 +29,5 @@ def scrape():
     return 'Scraping Succussful!'
 
 # Run code
-if __name__ = '__main__':
+if __name__ == '__main__':
     app.run()
