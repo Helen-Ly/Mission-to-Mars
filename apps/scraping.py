@@ -9,11 +9,9 @@ import datetime as dt
 
 # Set the executable path and initialize the chrome browser in splinter
 executable_path = {'executable_path': 'chromedriver.exe'}
-#browser = Browser('chrome', **executable_path)
 
 # Define function for scrape all and initiate the browser
 def scrape_all():
-    #global browser
 
     # Initiate headless driver for deployment
     browser = Browser('chrome', executable_path = 'chromedriver', headless = False)
@@ -186,8 +184,8 @@ def mars_facts():
         return None
     
     # Assign columns and set index of DF
-    df.columns = ['description', 'value'] # columns for the new DF
-    df. set_index('description', inplace = True)
+    df.columns = ['Description', 'Mars'] # columns for the new DF
+    df. set_index('Description', inplace = True)
 
     # return DF back into html, add bootstrap
     return df.to_html()
