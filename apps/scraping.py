@@ -7,11 +7,16 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import datetime as dt
 
+# Set the executable path and initialize the chrome browser in splinter
+executable_path = {'executable_path': 'chromedriver.exe'}
+#browser = Browser('chrome', **executable_path)
+
 # Define function for scrape all and initiate the browser
 def scrape_all():
+    #global browser
 
     # Initiate headless driver for deployment
-    browser = Browser('chrome', executable_path = 'chromedriver', headless = True)
+    browser = Browser('chrome', executable_path = 'chromedriver', headless = False)
 
     # Set news title and paragraph variables
     news_title, news_paragraph = mars_news(browser)
@@ -22,13 +27,14 @@ def scrape_all():
         'news_paragraph': news_paragraph,
         'featured_image': featured_image(browser),
         'facts': mars_facts(),
+        'mars_hemisphere': mars_hemisphere(browser),
         'last_modified': dt.datetime.now()
     }
 
+    browser.quit()
 
-# Set the executable path and initialize the chrome browser in splinter
-executable_path = {'executable_path': 'chromedriver.exe'}
-browser = Browser('chrome', **executable_path)
+    return data
+
 
 #-----------------
 # Article Scraping
@@ -109,6 +115,60 @@ def featured_image(browser):
 
     return img_url
 
+#------------------
+# Hemisphere Images
+#------------------
+
+# Create hemisphere function
+def mars_hemisphere(browser):
+
+    # Visit URL
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+
+    # Parse the resulting html with soup
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+
+    base_url= 'https://astrogeology.usgs.gov'
+
+    #Parse out the sourp and find all of the links
+    description_elem = soup.find_all('div', class_='description')
+
+    # for each item in desc_elem, pull the link and concatenate with base_url
+    links = [base_url + item.a['href'] for item in description_elem]
+
+    # Initialize list for dict
+    title_url_list = []
+
+    # Parse through each link to grab title and img_url
+    for link in links:
+        
+        # Visit each link
+        browser.visit(link)
+        
+        # Parse the resulting html with soup
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Get title
+        title = soup.select_one('h2.title').get_text()
+        
+        # Get img_url
+        img_elem = soup.select('div.downloads li')
+        
+        # first_element, = [OUTPUT FOR_LOOP FILTER]   
+        img_url, = [item.a['href'] for item in img_elem if item.a.get_text() == 'Sample']
+        
+        # Put into a dictionary
+        title_url_dict = {'title': title, 'img_url': img_url}
+        
+        # Append to list
+        title_url_list.append(title_url_dict)
+
+    return title_url_list
+
+
 #---------------
 # Facts Scraping
 #---------------
@@ -131,9 +191,6 @@ def mars_facts():
 
     # return DF back into html, add bootstrap
     return df.to_html()
-
-# End automated browsing session
-browser.quit()
 
 # Run code
 if __name__ == '__main__':

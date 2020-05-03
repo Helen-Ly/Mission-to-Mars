@@ -7,7 +7,7 @@ import scraping
 app = Flask(__name__)
 
 # Use flask_pymongo to set up mongo connection
-# tells Python our app will connect to Mongo isong URI (uniform resource identified), similar to URL
+# tells Python our app will connect to Mongo using URI (uniform resource identified), similar to URL
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/mars_app'
 mongo = PyMongo(app)
 
