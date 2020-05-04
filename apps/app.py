@@ -1,5 +1,5 @@
 # Import our dependencies
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 import scraping
 
@@ -26,7 +26,7 @@ def scrape():
     mars = mongo.db.mars
     mars_data = scraping.scrape_all()
     mars.update({}, mars_data, upsert = True)
-    return 'Scraping Succussful!'
+    return redirect('/')
 
 # Run code
 if __name__ == '__main__':
