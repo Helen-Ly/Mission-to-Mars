@@ -57,7 +57,7 @@ Having a portfolio is a great way to display a bit about yourself and the projec
    - index.html (create a subfolder called *templates* and add the file into the folder)
    - app.py
 
-2. Open Visual Studio Code from your projects folder.
+2. Open Visual Studio Code from your project's folder.
 
 3. In your Anaconda prompt (inside your development environment), navigate to the project folder and type "python app.py".
 
